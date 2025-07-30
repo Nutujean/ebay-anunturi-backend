@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "backend",
     "version": "1.0.0",
     "main": "server.js",
@@ -98,3 +99,13 @@
     "license": "ISC",
     "description": ""
 }
+=======
+  "name": "ebay-anunturi-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node src/server.js"
+  },
+  "dependencies": {}
+}
+>>>>>>> 6b3e84e8dac71d8c020f3f49557b7f7f5deac92c
