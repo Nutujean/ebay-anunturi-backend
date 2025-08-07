@@ -38,5 +38,6 @@ router.post("/", async (req, res) => {
     res.status(500).json({ message: "Eroare la crearea anunțului", error });
   }
 });
+<Route path="/edit/:id" element={<EditAnunt />} />
 
 module.exports = router;
