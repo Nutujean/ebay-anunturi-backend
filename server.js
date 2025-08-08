@@ -1,47 +1,31 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const authRoutes = require('./routes/auth');
-const anunturiRoutes = require('./routes/anunturi');
-const path = require('path');
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors';
+import authRoutes from './routes/auth.js';
+import anunturiRoutes from './routes/anunturi.js';
 
 dotenv.config();
 
 const app = express();
-
-// ✅ CORS CORESPUNZĂTOR pentru frontend-ul tău live
-app.use(cors({
-  origin: 'https://ebay-anunturi.ro',
-  credentials: true,
-}));
-
-app.use(express.json());
-
-// 🔐 Rute autentificare
-app.use('/api', authRoutes);
-
-// 📢 Rute anunțuri
-app.use('/api/anunturi', anunturiRoutes);
-
-// 🧪 Rută de test
-app.get('/api/test', (req, res) => {
-  res.json({ mesaj: 'Backend funcționează corect!' });
-});
-
-// ✅ Server + MongoDB
 const PORT = process.env.PORT || 10000;
 
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => {
-  console.log('✅ Conectat la MongoDB');
-  app.listen(PORT, () => {
-    console.log(`🚀 Serverul rulează pe portul ${PORT}`);
+// Middleware
+app.use(cors());
+app.use(express.json());
+
+// Rute
+app.use('/api/login', authRoutes);
+app.use('/api/anunturi', anunturiRoutes);
+
+// Pornire server și conectare la MongoDB
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('✅ Conectat la MongoDB');
+    app.listen(PORT, () => {
+      console.log(`🚀 Serverul rulează pe portul ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('❌ Eroare conectare MongoDB:', err);
   });
-})
-.catch((err) => {
-  console.error('❌ Eroare conectare MongoDB:', err);
-});
