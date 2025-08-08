@@ -1,25 +1,30 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import authRoutes from './routes/auth.js';
-import anunturiRoutes from './routes/anunturi.js';
+const express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/auth');
+const anunturiRoutes = require('./routes/anunturi');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Rute
-app.use('/api/login', authRoutes);
+app.use('/api', authRoutes);
 app.use('/api/anunturi', anunturiRoutes);
 
-// Pornire server și conectare la MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+app.get('/', (req, res) => {
+  res.send('✅ Backend ebay-anunturi funcționează.');
+});
+
+mongoose
+  .connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log('✅ Conectat la MongoDB');
     app.listen(PORT, () => {
