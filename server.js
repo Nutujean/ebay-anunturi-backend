@@ -2,34 +2,46 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const multer = require('multer');
-const path = require('path');
 const authRoutes = require('./routes/auth');
 const anunturiRoutes = require('./routes/anunturi');
+const path = require('path');
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-// Middleware
-app.use(cors());
+// ✅ CORS CORESPUNZĂTOR pentru frontend-ul tău live
+app.use(cors({
+  origin: 'https://ebay-anunturi.ro',
+  credentials: true,
+}));
+
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Rute
+// 🔐 Rute autentificare
 app.use('/api', authRoutes);
+
+// 📢 Rute anunțuri
 app.use('/api/anunturi', anunturiRoutes);
 
-// Conectare MongoDB
-mongoose
-  .connect(process.env.MONGO_URL)
-  .then(() => {
-    console.log('✅ Conectat la MongoDB');
-    app.listen(PORT, () => {
-      console.log(`🚀 Serverul rulează pe portul ${PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Eroare conectare MongoDB:', err);
+// 🧪 Rută de test
+app.get('/api/test', (req, res) => {
+  res.json({ mesaj: 'Backend funcționează corect!' });
+});
+
+// ✅ Server + MongoDB
+const PORT = process.env.PORT || 10000;
+
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => {
+  console.log('✅ Conectat la MongoDB');
+  app.listen(PORT, () => {
+    console.log(`🚀 Serverul rulează pe portul ${PORT}`);
   });
+})
+.catch((err) => {
+  console.error('❌ Eroare conectare MongoDB:', err);
+});
